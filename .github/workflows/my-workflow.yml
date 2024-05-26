@@ -1,20 +1,31 @@
-name: Manual install
-
+name: Manual build & test
 on:
   workflow_dispatch:
+    inputs:
+      run-tests:
+        description: "Run tests?"
+        required: true
+        default: "false"
 
 jobs:
-  install:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: "16"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Test application
+        if: ${{ github.event.inputs.run-tests == 'true' }}
+        run: npm test
