@@ -1,4 +1,4 @@
-name: Manual build & test
+name: Manual or PR build & test
 on:
   workflow_dispatch:
     inputs:
@@ -6,6 +6,8 @@ on:
         description: "Run tests?"
         required: true
         default: "false"
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build-and-test:
@@ -27,5 +29,5 @@ jobs:
         run: npm run build
 
       - name: Test application
-        if: ${{ github.event.inputs.run-tests == 'true' }}
+        if: ${{ github.event.inputs.run-tests == 'true' || github.event_name == 'pull_request' }}
         run: npm test
