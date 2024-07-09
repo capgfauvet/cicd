@@ -244,9 +244,10 @@ jobs:
 
 </details>
 
-### 6. Bloquer la Pull Request en cas d'erreur
+### 6. Règles de protection de branche
 
-- La Pull Request précédemment créée peut tout de même être fusionnée alors que les tests unitaires de l'application ne sont pas tous en succès. Mettre en place une sécurité sur la branche pour empêcher cela ([Documentation GitHub : Création d'une règle de protection de branche - vérifications d'état #7](https://docs.github.com/fr/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule#creating-a-branch-protection-rule)).
+- La Pull Request précédemment créée peut tout de même être fusionnée alors que les tests unitaires de l'application ne sont pas tous en succès. Mettre en place une sécurité sur la branche pour empêcher cela et bloquer tout push sur la branche de travail. ([Documentation GitHub : Création d'une règle de protection de branche - vérifications d'état #7](https://docs.github.com/fr/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule#creating-a-branch-protection-rule)).
+- Vérifier que la Pull Request ne peut être fusionnée et qu'il n'est pas possible de pousser directement sur la branche de travail.
 
 > [!TIP]
 > La vérification d'état s'attend à un job et non pas à un workflow. Dans l'exemple des corrections fournies plus haut, il s'agit de `build-and-test`.
@@ -257,13 +258,11 @@ jobs:
 - Aller dans **Settings > Branches**.
 - Cliquer sur **Add classic branch protection rule**.
 - Saisir le nom de votre branche sur laquelle les Pull Requests seront fusionnées.
+- Cocher **Require a pull request before merging**.
 - Cocher **Require status checks to pass before merging**.
   - Chercher le nom du job et l'ajouter.
 - Cliquer sur le bouton **Create** tout en bas.
 </details>
-
-> [!NOTE]
-> Il est courant d'associer la règle **Require a pull request before merging** dans le but d'empêcher de pouvoir contourner les règles définies sur les workflows des Pull Requests en poussant directement un commit sur la branche de destination.
 
 ### 7. Débloquer la Pull Request
 
