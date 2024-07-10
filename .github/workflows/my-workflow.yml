@@ -1,20 +1,50 @@
-name: Manual install
-
+name: Manual or PR build & test
 on:
   workflow_dispatch:
+    inputs:
+      run-tests:
+        description: "Run tests?"
+        required: true
+        default: "false"
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  install:
+  build-and-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: "cicd_database"
+          POSTGRES_USER: "cicd_user"
+          POSTGRES_PASSWORD: "cicd_password"
+          # POSTGRES_DB: ${{ secrets.CICD_POSTGRES_DB }}
+          # POSTGRES_USER: ${{ secrets.CICD_POSTGRES_USER }}
+          # POSTGRES_PASSWORD: ${{ secrets.CICD_POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: "16"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Test application
+        if: ${{ github.event.inputs.run-tests == 'true' || github.event_name == 'pull_request' }}
+        run: npm test

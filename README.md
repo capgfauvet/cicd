@@ -281,4 +281,57 @@ static minus(a: number, b: number): number {
 
 </details>
 
+### 8. Utiliser des services
+
+- Créer une nouvelle branche et la Pull Request associée et y ajouter le fichier de test suivant :
+
+[test/database.test.ts](test/database.test.ts)
+
+```ts
+import { Client } from "pg";
+
+describe("Database", () => {
+  test("connection", async () => {
+    const database = new Client({
+      host: "127.0.0.1",
+      port: 5432,
+      database: "cicd_database",
+      user: "cicd_user",
+      password: "cicd_password",
+    });
+
+    const connected = await database
+      .connect()
+      .then(() => true)
+      .catch(() => false)
+      .finally(async () => await database.end());
+    expect(connected).toBe(true);
+  });
+});
+```
+
+- Ajouter un service PostgreSQL dans le workflow afin que le nouveau test testant la connexion à la base de données ne soit plus en échec ([Documentation GitHub : Création de conteneurs de service PostgreSQL](https://docs.github.com/fr/actions/using-containerized-services/creating-postgresql-service-containers)).
+
+### 9. Second job optionel SonarCloud
+
 - A définir : Ajouter un service BDD + secret / mettre en place le déploiement au Push / SonarCloud ? mettre en place un ajout de commentaire avec le coverage de Jest (https://github.com/marketplace/actions/jest-coverage-comment) ?
+
+### 10. Mise en place de secrets
+
+- Protégez vos mots de passe dans le workflow en utilsant des secrets ([Documentation GitHub : Utilisation de secrets dans GitHub Actions](https://docs.github.com/fr/actions/security-guides/using-secrets-in-github-actions)).
+
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+**Ajouter pg au package dès le début :**  
+ "express": "^4.19.2",
+"pg": "^8.12.0"
+},
+"devDependencies": {
+"@types/express": "^4.17.21",
+"@types/jest": "^29.5.12",
+"@types/pg": "^8.11.6",
