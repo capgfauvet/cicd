@@ -2,6 +2,13 @@ name: Manual install
 
 on:
   workflow_dispatch:
+    inputs:
+      runTest:
+        description: 'Run test ?'
+        required: true
+        default: false
+        type: boolean
+
 
 jobs:
   install:
@@ -19,5 +26,12 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
+
+    - name: Run Build
+      run: |
         npm run build
+    
+    - name: Run Test
+      if: github.event.inputs.runTest == 'true'
+      run: | 
         npm test
